@@ -1,31 +1,39 @@
+
 //import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Semaphore;
-public class Assembler implements Runnable{
+
+public class Assembler implements Runnable {
 //	private BlockingQueue<Integer> ifFull;
 	private Semaphore pack;
+	private Semaphore semA;
+	private Semaphore semB;
 
-
-	public Assembler(Semaphore packer) {
-		pack=packer;
+	public Assembler(Semaphore packer, Semaphore semA, Semaphore semB) {
+		this.semA = semA;
+		this.semB = semB;
+		pack = packer;
 	}
+
 	@Override
 	public void run() {
-		int count=0;
-		for(int i=1;i<=6;i++) {
-			System.out.println("Assembler: waiting for components");
-			System.out.println("Assembler: Product-"+i+" completed.");
-			
-			//increase product storage
+		int count = 0;
+		for (int i = 1;;i++) {
 			try {
+//				System.out.println("Assembler: waiting for components");
+				semA.acquire();
+				semB.acquire();
 				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (InterruptedException e2) {
+				e2.printStackTrace();
 			}
-		}
-		if(count%6==0) {
-			//send signal to packer inform there is 6 product ready to be pack
-			pack.release();
+
+			System.out.println("Assembler: Product-" + i + " completed.");
+			count++;
+			// increase product storage
+			if (count % 6 == 0) {
+				// send signal to packer inform there is 6 product ready to be pack
+				pack.release();
+			}
 		}
 	}
 

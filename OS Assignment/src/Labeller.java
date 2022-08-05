@@ -1,22 +1,24 @@
 import java.util.concurrent.Semaphore;
 public class Labeller implements Runnable{
-	private Semaphore label;
+	private Semaphore semLabel;
 	
-	public Labeller(Semaphore label) {
-		this.label=label;
+	public Labeller(Semaphore semLabel) {
+		this.semLabel=semLabel;
 	}
 	
 
 	@Override
 	public void run() {
+		int count=0;
+		while(true) {
 		try {
-			label.acquire();
+			semLabel.acquire();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Box is labelled");
+		System.out.println("Labeller: Box-"+(++count)+" labelled");
 		
+	}
 	}
 	//if packer signal the label as box
 	
